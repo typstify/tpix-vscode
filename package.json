@@ -1,0 +1,139 @@
+{
+  "name": "tpix-vscode",
+  "displayName": "TPIX",
+  "description": "Manage Typst packages on TPIX from VS Code",
+  "version": "0.0.1",
+  "publisher": "typstify",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./out/src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "tpix.search",
+        "title": "TPIX: Search Packages",
+        "icon": "$(search)"
+      },
+      {
+        "command": "tpix.install",
+        "title": "TPIX: Install Package",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "tpix.info",
+        "title": "TPIX: Show Package Info"
+      },
+      {
+        "command": "tpix.pullDependencies",
+        "title": "TPIX: Fetch Project Dependencies",
+        "icon": "$(sync)"
+      },
+      {
+        "command": "tpix.refreshCache",
+        "title": "TPIX: Refresh Cached Packages",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "tpix.removeCached",
+        "title": "TPIX: Remove Cached Package",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "tpix.revealPackage",
+        "title": "TPIX: Reveal in File Explorer"
+      },
+      {
+        "command": "tpix.login",
+        "title": "TPIX: Login"
+      },
+      {
+        "command": "tpix.logout",
+        "title": "TPIX: Logout"
+      },
+      {
+        "command": "tpix.whoami",
+        "title": "TPIX: Show Authenticated User"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "tpix",
+          "title": "TPIX",
+          "icon": "resources/tpix.svg"
+        }
+      ]
+    },
+    "views": {
+      "tpix": [
+        {
+          "id": "tpix.cache",
+          "name": "Cached Packages",
+          "icon": "resources/tpix.svg"
+        }
+      ]
+    },
+    "menus": {
+      "view/title": [
+        {
+          "command": "tpix.search",
+          "when": "view == tpix.cache",
+          "group": "navigation@1"
+        },
+        {
+          "command": "tpix.install",
+          "when": "view == tpix.cache",
+          "group": "navigation@2"
+        },
+        {
+          "command": "tpix.pullDependencies",
+          "when": "view == tpix.cache",
+          "group": "navigation@3"
+        },
+        {
+          "command": "tpix.refreshCache",
+          "when": "view == tpix.cache",
+          "group": "navigation@4"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "tpix.revealPackage",
+          "when": "view == tpix.cache && viewItem == tpixVersion",
+          "group": "inline@1"
+        },
+        {
+          "command": "tpix.removeCached",
+          "when": "view == tpix.cache && viewItem == tpixVersion",
+          "group": "inline@2"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "TPIX",
+      "properties": {
+        "tpix.binaryPath": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Absolute path to the `tpix` CLI binary. When empty, the bundled binary is used, falling back to `tpix` on `PATH`."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "check": "tsc -p ./ --noEmit",
+    "test": "npm run compile && node --test out/test/"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.6.0"
+  }
+}
