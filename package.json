@@ -15,49 +15,28 @@
   "contributes": {
     "commands": [
       {
-        "command": "tpix.search",
-        "title": "TPIX: Search Packages",
-        "icon": "$(search)"
+        "command": "tpix.open",
+        "title": "TPIX: Open Panel",
+        "icon": "$(package)"
       },
       {
         "command": "tpix.install",
-        "title": "TPIX: Install Package",
-        "icon": "$(cloud-download)"
+        "title": "TPIX: Install Package"
       },
       {
-        "command": "tpix.info",
-        "title": "TPIX: Show Package Info"
+        "command": "tpix.newPackage",
+        "title": "TPIX: New Package",
+        "icon": "$(new-folder)"
       },
       {
-        "command": "tpix.pullDependencies",
-        "title": "TPIX: Fetch Project Dependencies",
-        "icon": "$(sync)"
+        "command": "tpix.bundle",
+        "title": "TPIX: Bundle Package",
+        "icon": "$(package)"
       },
       {
-        "command": "tpix.refreshCache",
-        "title": "TPIX: Refresh Cached Packages",
-        "icon": "$(refresh)"
-      },
-      {
-        "command": "tpix.removeCached",
-        "title": "TPIX: Remove Cached Package",
-        "icon": "$(trash)"
-      },
-      {
-        "command": "tpix.revealPackage",
-        "title": "TPIX: Reveal in File Explorer"
-      },
-      {
-        "command": "tpix.login",
-        "title": "TPIX: Login"
-      },
-      {
-        "command": "tpix.logout",
-        "title": "TPIX: Logout"
-      },
-      {
-        "command": "tpix.whoami",
-        "title": "TPIX: Show Authenticated User"
+        "command": "tpix.publish",
+        "title": "TPIX: Publish Package",
+        "icon": "$(cloud-upload)"
       }
     ],
     "viewsContainers": {
@@ -72,57 +51,12 @@
     "views": {
       "tpix": [
         {
-          "id": "tpix.cache",
-          "name": "Cached Packages",
+          "id": "tpix.home",
+          "name": "TPIX",
+          "type": "webview",
           "icon": "resources/tpix.svg"
         }
       ]
-    },
-    "menus": {
-      "view/title": [
-        {
-          "command": "tpix.search",
-          "when": "view == tpix.cache",
-          "group": "navigation@1"
-        },
-        {
-          "command": "tpix.install",
-          "when": "view == tpix.cache",
-          "group": "navigation@2"
-        },
-        {
-          "command": "tpix.pullDependencies",
-          "when": "view == tpix.cache",
-          "group": "navigation@3"
-        },
-        {
-          "command": "tpix.refreshCache",
-          "when": "view == tpix.cache",
-          "group": "navigation@4"
-        }
-      ],
-      "view/item/context": [
-        {
-          "command": "tpix.revealPackage",
-          "when": "view == tpix.cache && viewItem == tpixVersion",
-          "group": "inline@1"
-        },
-        {
-          "command": "tpix.removeCached",
-          "when": "view == tpix.cache && viewItem == tpixVersion",
-          "group": "inline@2"
-        }
-      ]
-    },
-    "configuration": {
-      "title": "TPIX",
-      "properties": {
-        "tpix.binaryPath": {
-          "type": "string",
-          "default": "",
-          "markdownDescription": "Absolute path to the `tpix` CLI binary. When empty, the bundled binary is used, falling back to `tpix` on `PATH`."
-        }
-      }
     }
   },
   "scripts": {
@@ -134,6 +68,7 @@
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/codicons": "^0.0.46-24",
     "typescript": "^5.6.0"
   }
 }

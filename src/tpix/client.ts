@@ -3,6 +3,7 @@ import { TpixError, type TpixErrorDetail } from './errors';
 import type {
   BundleResult,
   CachedListResult,
+  DependencyGraphResult,
   GetResult,
   LoginResult,
   LogoutResult,
@@ -58,6 +59,15 @@ export interface PullOptions extends TpixRunOptions {
 export interface BundleOptions extends TpixRunOptions {
   output?: string;
   exclude?: string[];
+}
+
+export interface NewPackageOptions extends TpixRunOptions {
+  /** Destination directory (`--dest`). */
+  directory?: string;
+  /** Namespace (`--namespace`). */
+  namespace?: string;
+  /** Create a template instead of a library (`--template`). */
+  template?: boolean;
 }
 
 interface RunOutput {
@@ -143,6 +153,10 @@ export class TpixClient {
     return this.run(['info', spec], options);
   }
 
+  deps(spec: string, options?: TpixRunOptions): Promise<DependencyGraphResult> {
+    return this.run(['deps', spec], options);
+  }
+
   get(spec: string, options: GetOptions = {}): Promise<GetResult> {
     const args = ['get', spec];
     if (options.noDeps) args.push('--no-deps');
@@ -176,8 +190,12 @@ export class TpixClient {
     return this.run(['push', packageFile, namespace], options);
   }
 
-  newPackage(directory: string, name: string, options?: TpixRunOptions): Promise<NewPackageResult> {
-    return this.run(['new', '-d', directory, name], options);
+  newPackage(name: string, options: NewPackageOptions = {}): Promise<NewPackageResult> {
+    const args = ['new', name];
+    if (options.directory) args.push('--dest', options.directory);
+    if (options.namespace) args.push('--namespace', options.namespace);
+    if (options.template) args.push('--template');
+    return this.run(args, options);
   }
 
   login(apiKey: string, options?: TpixRunOptions): Promise<LoginResult> {

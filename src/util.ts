@@ -33,26 +33,3 @@ export function handleError(err: unknown): void {
 export function workspaceCwd(): string | undefined {
   return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
 }
-
-/** Compares dotted version strings numerically, falling back to lexical order. */
-export function compareVersions(a: string, b: string): number {
-  const left = a.split('.');
-  const right = b.split('.');
-  const length = Math.max(left.length, right.length);
-
-  for (let i = 0; i < length; i++) {
-    const na = Number(left[i] ?? '0');
-    const nb = Number(right[i] ?? '0');
-    if (!Number.isNaN(na) && !Number.isNaN(nb)) {
-      if (na !== nb) {
-        return na - nb;
-      }
-    } else {
-      const cmp = (left[i] ?? '').localeCompare(right[i] ?? '');
-      if (cmp !== 0) {
-        return cmp;
-      }
-    }
-  }
-  return 0;
-}

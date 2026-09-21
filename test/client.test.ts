@@ -63,3 +63,21 @@ test(
     assert.equal(logout.success, true);
   },
 );
+
+test('bundle produces an archive from a directory with typst.toml', { skip: !hasBinary }, async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tpix-vscode-pkg-'));
+  fs.writeFileSync(
+    path.join(dir, 'typst.toml'),
+    '[package]\nname = "demo"\nversion = "0.1.0"\nentrypoint = "lib.typ"\n',
+  );
+  fs.writeFileSync(path.join(dir, 'lib.typ'), '#let x = 1\n');
+
+  const result = await isolatedClient().bundle(dir);
+  assert.ok(fs.existsSync(result.outputPath));
+});
+
+test('newPackage scaffolds a package directory', { skip: !hasBinary }, async () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'tpix-vscode-new-'));
+  const result = await isolatedClient().newPackage('demo-pkg', { directory: dir, namespace: 'preview' });
+  assert.ok(fs.existsSync(path.join(result.packageDir, 'typst.toml')));
+});

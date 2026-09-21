@@ -1,0 +1,420 @@
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--vscode-font-family);
+  font-size: var(--vscode-font-size, 13px);
+  color: var(--vscode-foreground);
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.title {
+  font-weight: 600;
+}
+
+.account {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9em;
+  min-width: 0;
+}
+
+.account > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.tab {
+  flex: 1;
+  background: transparent;
+  color: var(--vscode-foreground);
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 6px 4px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.tab.active {
+  border-bottom-color: var(--vscode-focusBorder);
+  font-weight: 600;
+}
+
+.content {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+button {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border: none;
+  border-radius: 3px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+button.secondary {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+}
+
+button.mini {
+  padding: 1px 6px;
+  font-size: 0.85em;
+}
+
+button.link {
+  background: none;
+  color: var(--vscode-textLink-foreground);
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+input,
+select {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border, transparent);
+  border-radius: 3px;
+  padding: 3px 6px;
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.muted {
+  color: var(--vscode-descriptionForeground);
+}
+
+.row {
+  margin: 3px 0;
+  word-break: break-word;
+}
+
+.card {
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 4px;
+  padding: 8px;
+  margin-bottom: 8px;
+}
+
+.pkgtitle {
+  font-weight: 600;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.thumbwrap {
+  margin: 8px 0;
+}
+
+.thumb {
+  display: block;
+  max-width: 100%;
+  max-height: 220px;
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 4px;
+  background: var(--vscode-editor-background);
+  object-fit: contain;
+  object-position: left top;
+}
+
+.ver {
+  color: var(--vscode-descriptionForeground);
+  font-size: 0.9em;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+.subhead {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.searchbar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.searchbar input {
+  flex: 1;
+  min-width: 0;
+}
+
+.results li.result {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+}
+
+.results li.result:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.rmain {
+  flex: 1;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.rname {
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.rdesc {
+  font-size: 0.9em;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar .muted {
+  margin-left: auto;
+}
+
+.tree,
+.tree ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.node .nrow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 0;
+  min-width: 0;
+}
+
+.node ul {
+  margin-left: 15px;
+  border-left: 1px solid var(--vscode-panel-border);
+  padding-left: 6px;
+}
+
+.caret,
+.caret-space {
+  width: 14px;
+  flex: 0 0 auto;
+  text-align: center;
+}
+
+.caret {
+  background: none;
+  color: var(--vscode-foreground);
+  padding: 0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.dot.ok {
+  background: var(--vscode-testing-iconPassed, #3fb950);
+}
+
+.dot.bad {
+  background: var(--vscode-testing-iconFailed, #f85149);
+}
+
+.nspec {
+  word-break: break-all;
+  min-width: 0;
+}
+
+.status {
+  font-size: 0.85em;
+  margin-left: auto;
+}
+
+.ind {
+  margin-left: 19px;
+}
+
+.group {
+  margin-bottom: 8px;
+}
+
+.grouphead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  color: var(--vscode-foreground);
+  text-align: left;
+  padding: 4px 2px;
+  font-weight: 600;
+  border-radius: 3px;
+}
+
+.grouphead:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.grouphead .caret {
+  width: 14px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.cachelist {
+  padding-left: 40px;
+}
+
+.pkggrouphead {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  background: none;
+  color: var(--vscode-foreground);
+  text-align: left;
+  padding: 2px 2px 2px 20px;
+  border-radius: 3px;
+}
+
+.pkggrouphead:hover {
+  background: var(--vscode-list-hoverBackground);
+}
+
+.pkggrouphead .caret {
+  width: 14px;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.iconbtn {
+  background: none;
+  color: var(--vscode-icon-foreground, var(--vscode-foreground));
+  padding: 2px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  line-height: 0;
+  width: 22px;
+  height: 22px;
+}
+
+.iconbtn .codicon {
+  font-size: 16px;
+}
+
+.iconbtn:hover {
+  background: var(--vscode-toolbar-hoverBackground, var(--vscode-list-hoverBackground));
+}
+
+.iconbtn svg {
+  display: block;
+}
+
+.codicon {
+  color: inherit;
+}
+
+.versions {
+  margin-top: 2px;
+}
+
+.vrow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+}
+
+.vrow .iconbtn {
+  margin-left: auto;
+}
+
+.cachelist li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 0;
+  min-width: 0;
+}
+
+.cname {
+  word-break: break-all;
+}
+
+.rowactions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.log li {
+  padding: 3px 0;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  word-break: break-word;
+}
+
+.log li.err {
+  color: var(--vscode-errorForeground);
+}

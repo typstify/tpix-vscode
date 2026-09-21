@@ -148,3 +148,16 @@ export interface VersionResult {
 export interface NewPackageResult {
   packageDir: string;
 }
+
+/** A node in a resolved dependency tree. */
+export interface DependencyNodeDto {
+  package: PackageRef;
+  cached: boolean;
+  children?: DependencyNodeDto[];
+}
+
+/** Result of `tpix deps <spec>`. */
+export interface DependencyGraphResult {
+  root: DependencyNodeDto;
+  packages: ResolvedPackage[];
+}
