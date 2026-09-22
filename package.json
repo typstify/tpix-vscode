@@ -1,5 +1,5 @@
 {
-  "name": "tpix-vscode",
+  "name": "tpix-client",
   "displayName": "TPIX",
   "description": "Manage Typst packages on TPIX from VS Code",
   "version": "0.1.3",
