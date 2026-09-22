@@ -1,10 +1,7 @@
 #!/usr/bin/env bash
 #
-# TEMPORARY development helper: build tpix-cli from a neighboring checkout and
-# copy the binary into ./bin so the extension can find it locally.
-#
-# In CI this will be replaced by downloading a pinned release from the
-# tpix-cli GitHub releases API.
+# Development helper: build tpix-cli from a neighboring checkout and install it
+# into ./bin/<target>/ for the current platform, so the extension can find it.
 #
 # Usage: scripts/install-local-bin.sh [path-to-tpix-cli]
 
@@ -18,12 +15,27 @@ if [[ ! -d "$source_dir" ]]; then
   exit 1
 fi
 
+goos="$(cd "$source_dir" && go env GOOS)"
+goarch="$(cd "$source_dir" && go env GOARCH)"
+
+case "$goos/$goarch" in
+  linux/amd64)   target="linux-x64" ;;
+  linux/arm64)   target="linux-arm64" ;;
+  darwin/amd64)  target="darwin-x64" ;;
+  darwin/arm64)  target="darwin-arm64" ;;
+  windows/amd64) target="win32-x64" ;;
+  *)
+    echo "unsupported local platform: $goos/$goarch" >&2
+    exit 1
+    ;;
+esac
+
 exe="tpix"
-if [[ "${OS:-}" == "Windows_NT" ]]; then
-  exe="tpix.exe"
-fi
+[[ "$target" == win32-* ]] && exe="tpix.exe"
 
-mkdir -p "$here/bin"
-(cd "$source_dir" && go build -o "$here/bin/$exe" ./cmd)
+dest_dir="$here/bin/$target"
+rm -rf "$dest_dir"
+mkdir -p "$dest_dir"
+(cd "$source_dir" && go build -o "$dest_dir/$exe" ./cmd)
 
-echo "installed $here/bin/$exe"
+echo "installed $dest_dir/$exe"

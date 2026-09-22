@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Download the pinned tpix CLI release for a VS Code target platform and place
-# the binary in ./bin so it can be bundled into the extension.
+# it in ./bin/<target>/ so it can be bundled into the (universal) extension.
 #
 # Usage: scripts/fetch-tpix.sh <vscode-target> [tpix-cli-version]
 #   e.g. scripts/fetch-tpix.sh linux-x64 v0.15.1
@@ -48,9 +48,10 @@ if ! tar -xzf "$tmp/pkg.tar.gz" -C "$tmp" "$bin_name" 2>/dev/null; then
 fi
 
 mkdir -p "$here/bin"
-# Keep exactly one bundled binary so a .vsix never contains several platforms.
-rm -f "$here/bin/tpix" "$here/bin/tpix.exe"
-mv "$tmp/$bin_name" "$here/bin/$bin_name"
-chmod +x "$here/bin/$bin_name"
+dest_dir="$here/bin/$target"
+rm -rf "$dest_dir"
+mkdir -p "$dest_dir"
+mv "$tmp/$bin_name" "$dest_dir/$bin_name"
+chmod +x "$dest_dir/$bin_name"
 
-echo "installed bin/$bin_name from tpix-cli ${version}"
+echo "installed bin/$target/$bin_name from tpix-cli ${version}"

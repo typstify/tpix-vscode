@@ -1,16 +1,16 @@
-# Build platform-specific .vsix artifacts. Publishing to the Marketplace is
-# intentionally NOT automated here (it needs a VSCE_PAT); run
-# `npx @vscode/vsce publish --packagePath <file>` locally instead, or install
-# the .vsix directly.
+# Build one universal .vsix that bundles the tpix CLI for every supported
+# platform (bin/<target>/). Publishing to the Marketplace is intentionally NOT
+# automated here (it needs a VSCE_PAT / the web upload); download the artifact
+# and publish it yourself.
 name: Build VSIX
 
 on:
   workflow_dispatch:
     inputs:
       tpix_cli_version:
-        description: "tpix-cli release tag to bundle"
+        description: "tpix-cli release tag to bundle (must contain tpix.exe for Windows, e.g. v0.15.1)"
         required: false
-        default: v0.15.1
+        default: v0.15.0
   release:
     types: [published]
 
@@ -22,11 +22,14 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  TPIX_CLI_VERSION_DEFAULT: v0.15.1
+  # Bump this to bundle a newer tpix-cli. It must be a release whose Windows
+  # asset contains tpix.exe: v0.15.0 predates the Makefile fix that names it
+  # correctly, so the build will fail on it by design.
+  TPIX_CLI_VERSION_DEFAULT: v0.15.0
 
 jobs:
-  verify:
-    name: Type-check & test
+  build:
+    name: Build universal VSIX
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,49 +43,23 @@ jobs:
 
       - run: npm run check
 
-      - name: Fetch tpix CLI for tests
-        run: scripts/fetch-tpix.sh linux-x64 "${{ github.event.inputs.tpix_cli_version || env.TPIX_CLI_VERSION_DEFAULT }}"
+      - name: Fetch tpix CLI for all platforms
+        run: scripts/fetch-all-tpix.sh "${{ github.event.inputs.tpix_cli_version || env.TPIX_CLI_VERSION_DEFAULT }}"
 
       - run: npm test
 
-  package:
-    name: Package ${{ matrix.target }}
-    needs: verify
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target:
-          - win32-x64
-          - linux-x64
-          - linux-arm64
-          - darwin-x64
-          - darwin-arm64
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-
-      - run: npm ci
-
-      - name: Fetch tpix CLI
-        run: scripts/fetch-tpix.sh ${{ matrix.target }} "${{ github.event.inputs.tpix_cli_version || env.TPIX_CLI_VERSION_DEFAULT }}"
-
-      - run: scripts/package.sh ${{ matrix.target }}
+      - run: scripts/package.sh
 
       - uses: actions/upload-artifact@v4
         with:
-          name: tpix-vscode-${{ matrix.target }}
+          name: tpix-vscode-vsix
           path: "*.vsix"
           if-no-files-found: error
           retention-days: 30
 
   attach:
     name: Attach .vsix to GitHub release
-    needs: package
+    needs: build
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
     permissions:

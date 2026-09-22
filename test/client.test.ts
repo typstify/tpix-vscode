@@ -6,7 +6,8 @@ import * as path from 'node:path';
 import { TpixClient, parseEnvelope } from '../src/tpix/client';
 import { TpixError } from '../src/tpix/errors';
 
-const binary = path.join(__dirname, '..', '..', 'bin', process.platform === 'win32' ? 'tpix.exe' : 'tpix');
+const binName = process.platform === 'win32' ? 'tpix.exe' : 'tpix';
+const binary = path.join(__dirname, '..', '..', 'bin', `${process.platform}-${process.arch}`, binName);
 const hasBinary = fs.existsSync(binary);
 
 /** A client pointed at the real binary but with an isolated config directory. */
