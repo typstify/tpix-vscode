@@ -2,7 +2,7 @@
   "name": "tpix-vscode",
   "displayName": "TPIX",
   "description": "Manage Typst packages on TPIX from VS Code",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "publisher": "tpix",
   "license": "MIT",
   "icon": "resources/icon.png",
