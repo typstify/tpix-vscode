@@ -1,0 +1,85 @@
+name: Package and Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Pin the tpix CLI version bundled into the extension. Bump this deliberately,
+  # in lockstep with tpix-cli releases.
+  TPIX_CLI_VERSION: v0.15.0
+
+jobs:
+  package:
+    name: Package ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - win32-x64
+          - linux-x64
+          - linux-arm64
+          - darwin-x64
+          - darwin-arm64
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: scripts/fetch-tpix.sh ${{ matrix.target }} ${{ env.TPIX_CLI_VERSION }}
+
+      - run: scripts/package.sh ${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vsix-${{ matrix.target }}
+          path: "*.vsix"
+          if-no-files-found: error
+
+  publish:
+    name: Publish to Marketplace
+    needs: package
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Verify VSCE_PAT is configured
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          if [ -z "$VSCE_PAT" ]; then
+            echo "::error::VSCE_PAT secret is not set (Marketplace > Manage scope)"
+            exit 1
+          fi
+
+      - name: Publish each platform package
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+        run: |
+          set -euo pipefail
+          for vsix in artifacts/*.vsix; do
+            echo "publishing $vsix"
+            npx --yes @vscode/vsce publish --packagePath "$vsix"
+          done

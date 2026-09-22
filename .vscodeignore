@@ -1,4 +1,5 @@
 .vscode/**
+.github/**
 src/**
 test/**
 scripts/**
@@ -6,4 +7,7 @@ scripts/**
 **/*.map
 tsconfig.json
 .gitignore
+package-lock.json
 node_modules/**
+out/test/**
+resources/icon.svg
