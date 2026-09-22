@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       tpix_cli_version:
-        description: "tpix-cli release tag to bundle (must contain tpix.exe for Windows, e.g. v0.15.1)"
+        description: "tpix-cli release tag to bundle (leave empty to use the pinned default)"
         required: false
-        default: v0.15.0
+        default: ""
   release:
     types: [published]
 
@@ -22,10 +22,10 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Bump this to bundle a newer tpix-cli. It must be a release whose Windows
-  # asset contains tpix.exe: v0.15.0 predates the Makefile fix that names it
-  # correctly, so the build will fail on it by design.
-  TPIX_CLI_VERSION_DEFAULT: v0.15.0
+  # Single source of truth for the bundled tpix-cli version; bump it here.
+  # It must be a release whose Windows asset contains tpix.exe (v0.15.0 predates
+  # the Makefile fix that names it correctly).
+  TPIX_CLI_VERSION_DEFAULT: v0.15.1
 
 jobs:
   build:
