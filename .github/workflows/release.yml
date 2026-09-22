@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
     inputs:
       tpix_cli_version:
-        description: "tpix-cli release tag to bundle (e.g. v0.15.0)"
+        description: "tpix-cli release tag to bundle"
         required: false
-        default: v0.15.0
+        default: v0.15.1
   release:
     types: [published]
 
@@ -22,9 +22,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  # Bump this to bundle a newer tpix-cli. Can be overridden per run via the
-  # workflow_dispatch input.
-  TPIX_CLI_VERSION_DEFAULT: v0.15.0
+  TPIX_CLI_VERSION_DEFAULT: v0.15.1
 
 jobs:
   verify:

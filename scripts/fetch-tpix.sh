@@ -4,7 +4,7 @@
 # the binary in ./bin so it can be bundled into the extension.
 #
 # Usage: scripts/fetch-tpix.sh <vscode-target> [tpix-cli-version]
-#   e.g. scripts/fetch-tpix.sh linux-x64 v0.15.0
+#   e.g. scripts/fetch-tpix.sh linux-x64 v0.15.1
 #
 # The version can also be provided via the TPIX_CLI_VERSION environment variable.
 
@@ -15,11 +15,11 @@ target="${1:?usage: fetch-tpix.sh <vscode-target> [tpix-cli-version]}"
 version="${2:-${TPIX_CLI_VERSION:-}}"
 
 case "$target" in
-  win32-x64)    asset="tpix-cli-windows-amd64.tar.gz"; exe="tpix.exe" ;;
-  linux-x64)    asset="tpix-cli-linux-amd64.tar.gz";   exe="tpix" ;;
-  linux-arm64)  asset="tpix-cli-linux-arm64.tar.gz";   exe="tpix" ;;
-  darwin-x64)   asset="tpix-cli-darwin-amd64.tar.gz";  exe="tpix" ;;
-  darwin-arm64) asset="tpix-cli-darwin-arm64.tar.gz";  exe="tpix" ;;
+  win32-x64)    asset="tpix-cli-windows-amd64.tar.gz"; bin_name="tpix.exe" ;;
+  linux-x64)    asset="tpix-cli-linux-amd64.tar.gz";   bin_name="tpix" ;;
+  linux-arm64)  asset="tpix-cli-linux-arm64.tar.gz";   bin_name="tpix" ;;
+  darwin-x64)   asset="tpix-cli-darwin-amd64.tar.gz";  bin_name="tpix" ;;
+  darwin-arm64) asset="tpix-cli-darwin-arm64.tar.gz";  bin_name="tpix" ;;
   *)
     echo "unsupported target: $target" >&2
     echo "supported: win32-x64 linux-x64 linux-arm64 darwin-x64 darwin-arm64" >&2
@@ -37,11 +37,20 @@ tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
 
 echo "downloading ${url}"
-curl -fsSL "$url" -o "$tmp/pkg.tar.gz"
-tar -xzf "$tmp/pkg.tar.gz" -C "$tmp" "$exe"
+curl -fsSL --retry 3 --retry-all-errors "$url" -o "$tmp/pkg.tar.gz"
+
+if ! tar -xzf "$tmp/pkg.tar.gz" -C "$tmp" "$bin_name" 2>/dev/null; then
+  echo "error: '${bin_name}' not found in ${asset} (${version})." >&2
+  echo "       tpix-cli releases built before the Makefile fix ship the Windows" >&2
+  echo "       binary as 'tpix'; pin a release that contains the fix." >&2
+  tar tzf "$tmp/pkg.tar.gz" >&2
+  exit 1
+fi
 
 mkdir -p "$here/bin"
-mv "$tmp/$exe" "$here/bin/$exe"
-chmod +x "$here/bin/$exe"
+# Keep exactly one bundled binary so a .vsix never contains several platforms.
+rm -f "$here/bin/tpix" "$here/bin/tpix.exe"
+mv "$tmp/$bin_name" "$here/bin/$bin_name"
+chmod +x "$here/bin/$bin_name"
 
-echo "installed bin/$exe from tpix-cli ${version}"
+echo "installed bin/$bin_name from tpix-cli ${version}"
